@@ -2,7 +2,7 @@
 
 set -e
 
-name=laser-sight
+name=laser-sight-vr
 
 rm -f $name.pk3
 

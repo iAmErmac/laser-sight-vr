@@ -19,7 +19,7 @@ class m8f_ls_Settings
   bool   targetColorChange()   { return targetColorChangeCvar.getBool();   }
   bool   friendlyColorChange() { return friendlyColorChangeCvar.getBool(); }
 
-  bool   hideOnSlot1()         { return hideOnSlot1Cvar.getBool();         }
+  bool   hideOnMeleeWeap()     { return hideOnMeleeCvar.getBool();         }
   bool   hideOnCloseDistance() { return hideOnCloseDistanceCvar.getBool(); }
   bool   onlyWhenReady()       { return onlyWhenReadyCvar.getBool();       }
   bool   hideOnSky()           { return hideOnSkyCvar.getBool();           }
@@ -36,6 +36,8 @@ class m8f_ls_Settings
   double distanceMultiplier()  { return distanceMultCvar.getDouble();      }
 
   bool   beamEnabled()         { return beamEnabledCvar.getBool();         }
+  bool   beamMoveHide()        { return beamHideCvar.getBool();            }
+  double beamOpacity()         { return beamOpacityCvar.getDouble();       }
   double beamStep()            { return beamStepCvar.getDouble();          }
 
   bool   isEnabled()           { return isEnabledCvar.getBool();           }
@@ -51,7 +53,7 @@ class m8f_ls_Settings
     result.targetColorChangeCvar   = ls_Cvar.of("m8f_wm_TSChangeLaserColor");
     result.friendlyColorChangeCvar = ls_Cvar.of("m8f_ls_TSChangeColorFriendly");
 
-    result.hideOnSlot1Cvar         = ls_Cvar.of("m8f_ls_HideOnSlot1");
+    result.hideOnMeleeCvar         = ls_Cvar.of("m8f_ls_hideOnMeleeWeap");
     result.hideOnCloseDistanceCvar = ls_Cvar.of("m8f_ls_hide_close");
     result.onlyWhenReadyCvar       = ls_Cvar.of("m8f_ls_OnlyWhenReady");
     result.hideOnSkyCvar           = ls_Cvar.of("m8f_ls_hide_on_sky");
@@ -68,6 +70,8 @@ class m8f_ls_Settings
     result.distanceMultCvar        = ls_Cvar.of("m8f_ls_distance_mult");
 
     result.beamEnabledCvar         = ls_Cvar.of("m8f_ls_BeamEnabled");
+    result.beamHideCvar            = ls_Cvar.of("m8f_ls_BeamMoveHide");
+    result.beamOpacityCvar         = ls_Cvar.of("m8f_ls_BeamOpacity");
     result.beamStepCvar            = ls_Cvar.of("m8f_ls_BeamStep");
 
     result.isEnabledCvar           = ls_Cvar.of("m8f_wm_ShowLaserSight");
@@ -81,7 +85,7 @@ class m8f_ls_Settings
   private ls_Cvar targetColorChangeCvar;
   private ls_Cvar friendlyColorChangeCvar;
 
-  private ls_Cvar hideOnSlot1Cvar;
+  private ls_Cvar hideOnMeleeCvar;
   private ls_Cvar hideOnCloseDistanceCvar;
   private ls_Cvar onlyWhenReadyCvar;
   private ls_Cvar hideOnSkyCvar;
@@ -98,6 +102,8 @@ class m8f_ls_Settings
   private ls_Cvar distanceMultCvar;
 
   private ls_Cvar beamEnabledCvar;
+  private ls_Cvar beamHideCvar;
+  private ls_Cvar beamOpacityCvar;
   private ls_Cvar beamStepCvar;
 
   private ls_Cvar isEnabledCvar;

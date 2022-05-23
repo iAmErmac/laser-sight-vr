@@ -1,7 +1,7 @@
-sprite WDO1A0, 32, 32
+sprite WDO1A0, 8, 8
 {
   Sprite WDOTA0, 0, 0
-  Offset 16, 16
-  XScale 2
-  YScale 2.4
+  Offset 4, 4
+  XScale 4.0
+  YScale 4.8
 }
