@@ -1,6 +1,6 @@
 # Standalone Laser Sight for GZDoom
 
-![Laser Sight mod for Doom VR](https://s8.gifyu.com/images/laser-sight-vr.gif)
+![Laser Sight mod for Doom VR](https://i.imgflip.com/6hcrww.gif)
 
 [Forum Topic](https://forum.zdoom.org/viewtopic.php?f=43&t=61079#p1060800)
 
