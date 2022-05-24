@@ -150,8 +150,6 @@ class m8f_ls_EventHandler : EventHandler
     if (_settings.onlyWhenReady() && !IsWeaponReady(_player, hand)) { return; }
 	let _vel = _player.mo.vel;
 	if(_settings.beamMoveHide() && (abs(_vel.x) > 2 || abs(_vel.y) > 2 || abs(_vel.z) > 2)) { return; }
-	
-    if (!_settings.beamEnabled()) { return; }
 
     Actor  tempPuff = a.LineAttack( a.angle
                                   , maxDistance
