@@ -5,7 +5,7 @@ M8F_LS_TITLE              = "Laser Sight Options";
 M8F_LS_SHOW               = "Show Laser Sight";
 
 M8F_LS_COLOR              = "Color";
-M8F_LS_HIDE_SLOT_1        = "Hide on slot 1";
+M8F_LS_HIDE_SLOT_1        = "Hide with Melee Weapons";
 M8F_LS_HIDE_CLOSE         = "Hide on small distance";
 M8F_LS_ONLY_READY         = "Show only if weapon is ready";
 LS_HIDE_ON_SKY            = "Hide on sky";
@@ -17,6 +17,7 @@ M8F_LS_OPACITY            = "Opacity";
 
 M8F_LS_BEAM_CAPTION       = "Beam (particles)";
 M8F_LS_BEAM_ENABLED       = "Beam enabled";
+M8F_LS_BEAM_MOTION_HIDE   = "Hide Beam while moving";
 M8F_LS_BEAM_STEP          = "Step";
 
 M8F_LS_COMMANDS_CAPTION   = "Laser Sight Commands";

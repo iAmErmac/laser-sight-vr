@@ -22,9 +22,11 @@ OptionMenu m8f_ls_Options
   StaticText  ""
   StaticText  "$M8F_LS_BEAM_CAPTION"       , 1
   Option      "$M8F_LS_BEAM_ENABLED"       , m8f_ls_BeamEnabled , OnOff
+  Option      "$M8F_LS_BEAM_MOTION_HIDE"   , m8f_ls_BeamMoveHide , OnOff
   Option      "$GLPREFMNU_PARTICLESTYLE"   , gl_particles_style , Particles
   Slider      "$M8F_LS_SCALE"              , m8f_ls_BeamScale   , 0.2, 5.0, 0.1, 1
-  Slider      "$M8F_LS_BEAM_STEP"          , m8f_ls_BeamStep    , 0.5, 50.0, 0.5, 1
+  Slider      "$M8F_LS_OPACITY"            , m8f_ls_BeamOpacity , 0.0, 1.0, 0.05, 2
+  Slider      "$M8F_LS_BEAM_STEP"          , m8f_ls_BeamStep    , 0.5, 5.0, 0.5, 1
 
   StaticText  ""
   StaticText  "$M8F_LS_COMMANDS_CAPTION"   , 1

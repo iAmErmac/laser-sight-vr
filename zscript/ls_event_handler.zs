@@ -38,9 +38,7 @@ class m8f_ls_EventHandler : EventHandler
 
     _puff.bInvisible = true;
 
-    if (_settings.hideOnSlot1() && IsSlot1(_player)) { return; }
-    if (_settings.onlyWhenReady() && !IsWeaponReady(_player)) { return; }
-    if (!_settings.isEnabled()) { return; }
+    if (!_settings.isEnabled() && !_settings.beamEnabled()) { return; }
     if (_player.readyWeapon == null) { return; }
 
     bool negative = (_settings.targetColorChange()   && _settings.hasTarget());
@@ -90,6 +88,11 @@ class m8f_ls_EventHandler : EventHandler
 
   private void MaybeShowDot(double pitch, Actor a, bool negative, bool friendly)
   {
+    if (!_settings.isEnabled()) { return; }
+	
+    if (_settings.hideOnMeleeWeap() && IsMeleeWeapon(_player)) { return; }
+    if (_settings.onlyWhenReady() && !IsWeaponReady(_player)) { return; }
+	
     let tempPuffClass = _settings.hideOnSky()
       ? "m8f_ls_InvisiblePuff"
       : "ls_InvisibleSkyPuff";
@@ -130,6 +133,11 @@ class m8f_ls_EventHandler : EventHandler
   private void MaybeShowBeam(double pitch, Actor a, bool negative, bool friendly)
   {
     if (!_settings.beamEnabled()) { return; }
+	
+    if (_settings.hideOnMeleeWeap() && IsMeleeWeapon(_player)) { return; }
+    if (_settings.onlyWhenReady() && !IsWeaponReady(_player)) { return; }
+	let _vel = _player.mo.vel;
+	if(_settings.beamMoveHide() && (abs(_vel.x) > 2 || abs(_vel.y) > 2 || abs(_vel.z) > 2)) { return; }
 
     Actor  tempPuff = a.LineAttack( a.angle
                                   , maxDistance
@@ -155,12 +163,10 @@ class m8f_ls_EventHandler : EventHandler
   private void ShowBeam(Actor a, vector3 targetPos, double distance, string shade)
   {
     color   beamColor  = shade;
-    double  size       = 2.0 * _settings.beamScale();
+    double  size       = 0.5 * _settings.beamScale();
+	vector3 wpos       = _player.mo.AttackPos;
 
-    double  viewHeight = a.player.viewz - a.pos.z - PlayerPawn(a).attackZOffset;
-    targetPos.z -= viewHeight;
-
-    vector3 relPos = targetPos - a.pos;
+    vector3 relPos = targetPos - wpos;
     int     nSteps = int(distance / _settings.beamStep());
 
     if (nSteps == 0) { return; }
@@ -168,36 +174,35 @@ class m8f_ls_EventHandler : EventHandler
     double  xStep     = relPos.x / nSteps;
     double  yStep     = relPos.y / nSteps;
     double  zStep     = relPos.z / nSteps;
-    double  alpha     = _settings.opacity();
+    double  alpha     = _settings.beamOpacity();
     int     drawSteps = nSteps - 2;
+
+	Actor wdummy = Actor.Spawn("m8f_ls_BeamInvisiblePuff", wpos);
 
     for (int i = 2; i < drawSteps; ++i)
     {
       double xoff = xStep * i;
       double yoff = yStep * i;
-      double zoff = zStep * i + viewHeight;
+      double zoff = zStep * i;
 
-      a.A_SpawnParticle( beamColor, beamFlags, beamLifetime, size, beamAngle
+      wdummy.A_SpawnParticle( beamColor, beamFlags, beamLifetime, size, beamAngle
                        , xoff, yoff, zoff
                        , beamVel, beamVel, beamVel, beamAcc, beamAcc, beamAcc
                        , alpha
                        );
     }
+	
+	wdummy.destroy();
   }
 
   // static functions section //////////////////////////////////////////////////
 
-  private play static bool IsSlot1(PlayerInfo player)
+  private play static bool IsMeleeWeapon(PlayerInfo player)
   {
     Weapon w = player.readyWeapon;
     if (w == null) { return false; }
-
-    int located;
-    int slot;
-    [located, slot] = player.weapons.LocateWeapon(w.GetClassName());
-
-    bool slot1 = (slot == 1);
-    return slot1;
+	
+	return w.bMeleeWeapon;
   }
 
   private static bool CheckTitlemap()
