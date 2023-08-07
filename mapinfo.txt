@@ -1,4 +1,4 @@
 gameinfo
 {
-  AddEventHandlers = "m8f_ls_EventHandler"
+  AddEventHandlers = "m8f_ls_EventHandler", "VRMainHandPosTracker"
 }

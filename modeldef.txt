@@ -1,0 +1,18 @@
+
+Model m8f_ls_LaserBeam
+{ 
+   Path "models"
+   Model 0 "laser_beam.md3"
+   Skin 0 "laser_tex.png"
+   
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   
+   USEACTORPITCH
+   DONTCULLBACKFACES
+   
+   FrameIndex LBIM A 0 0
+
+   Skin 0 "laser_tex2.png"
+   FrameIndex LBIM B 0 0
+}

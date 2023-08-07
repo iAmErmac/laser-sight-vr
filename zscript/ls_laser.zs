@@ -64,3 +64,29 @@ class m8f_ls_BeamInvisiblePuff : m8f_ls_PuffBase
   }
 
 } // class m8f_ls_BeamInvisiblePuff
+
+class m8f_ls_LaserBeam : Actor
+{
+	Default
+	{
+	Radius 1;
+	Height 1;
+	Speed 0;
+	+GHOST;
+	+NOCLIP;
+	+NOGRAVITY;
+	-SOLID;
+	-FORCEYBILLBOARD;
+	}
+	
+	States
+	{
+	Spawn:
+		TNT1 A 0;
+		LBIM A 1 Bright;
+		Loop;
+	LongBeam:
+		LBIM B 1 Bright;
+		Loop;
+	}
+}

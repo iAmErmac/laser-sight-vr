@@ -13,18 +13,18 @@
 - visible on all distances
 - configurable color and size
 - options to hide in various situations
-- optional particle beam
-- supports offhand weapon (VR)
+- optional laser beam
+- supports offhand weapons (VR)
 
 ## Thanks
 
 - PixelWAD, Someone64, Tesculpture, RedClairefield, Apeirogon, Sinael, and
   ToxicMasculinity for feature suggestions and bug reports.
 - Emawind (codes for offhand weapon support in VR)
-- Ermac (particle beam fix for VR)
+- Ermac (laser beam for VR)
 
 ## Copying
 
-Author: m8f
+Author: m8f, Ermac
 
 License: GPLv3 (see copying.txt)

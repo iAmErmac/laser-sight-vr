@@ -2,10 +2,12 @@
 
 M8F_LS_TITLE              = "Laser Sight Options";
 
-M8F_LS_SHOW               = "Show Laser Sight";
+M8F_LS_SHOW               = "Laser Sight";
 
+M8F_LS_DOT_CAPTION        = "Laser Dot";
+M8F_LS_DOT_ENABLED        = "Show Laser dot";
 M8F_LS_COLOR              = "Color";
-M8F_LS_HIDE_SLOT_1        = "Hide with Melee Weapons";
+M8F_LS_HIDE_MELEE         = "Hide with Melee Weapons";
 M8F_LS_HIDE_CLOSE         = "Hide on small distance";
 M8F_LS_ONLY_READY         = "Show only if weapon is ready";
 LS_HIDE_ON_SKY            = "Hide on sky";
@@ -15,12 +17,21 @@ LS_DISTANCE_MULT          = "Size by distance coefficient";
 M8F_LS_SCALE              = "Scale";
 M8F_LS_OPACITY            = "Opacity";
 
-M8F_LS_BEAM_CAPTION       = "Beam (particles)";
+M8F_LS_BEAM_CAPTION       = "Laser Beam";
 M8F_LS_BEAM_ENABLED       = "Beam enabled";
-M8F_LS_BEAM_MOTION_HIDE   = "Hide Beam while moving";
-M8F_LS_BEAM_STEP          = "Step";
+M8F_LS_BEAM_MODE       	  = "Beam mode";
+M8F_LS_BEAM_MOTION_HIDE   = "Hide beam while moving";
+M8F_LS_BEAM_OFFSET        = "Laser beam offset";
+M8F_LS_BEAM_LENGTH        = "Solid beam length";
+M8F_LS_BEAM_STEP          = "Particle beam spread";
+M8F_LS_BEAM_PMAX          = "Max particle amount";
 
-M8F_LS_COMMANDS_CAPTION   = "Laser Sight Commands";
+M8F_LS_BEAM_SOLID         = "Solid";
+M8F_LS_BEAM_PARTICLE      = "Particle";
+M8F_LS_BEAM_HALF          = "Half";
+M8F_LS_BEAM_FULL          = "Full";
+
+M8F_LS_COMMANDS_CAPTION   = "Laser sight Commands";
 M8F_LS_TOGGLE             = "Toggle Laser Sight";
 
 M8F_LS_TARGET_SPY_CAPTION = "Target Spy Cross-mod Options";
