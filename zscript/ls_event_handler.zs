@@ -38,14 +38,19 @@ class m8f_ls_EventHandler : EventHandler
 
     _puffMainhand.bInvisible = true;
     _puffOffhand.bInvisible = true;
+    _beamMainhand.bInvisible = true;
+    _beamOffhand.bInvisible = true;
 
-    if (!_settings.isEnabled() && !_settings.beamEnabled()) { return; }
+    if (!_settings.isEnabled()) { return; }
     if (_player.readyWeapon == null && _player.OffhandWeapon == null) { return; }
 
     bool negative = (_settings.targetColorChange()   && _settings.hasTarget());
     bool friendly = (_settings.friendlyColorChange() && _settings.isTargetFriendly());
+	
+	if(_beamDelayCounter > 0) _beamDelayCounter--;
 
     ShowLaserSight(negative, friendly, _player);
+    ShowLaserBeam(negative, friendly, _player);
   }
 
   // methods section ///////////////////////////////////////////////////////////
@@ -72,35 +77,56 @@ class m8f_ls_EventHandler : EventHandler
     _settings      = m8f_ls_Settings.of();
     _puffMainhand  = Actor.Spawn("m8f_ls_LaserPuff");
     _puffOffhand   = Actor.Spawn("m8f_ls_LaserPuff");
+    _beamMainhand  = Actor.Spawn("m8f_ls_LaserBeam");
+    _beamOffhand   = Actor.Spawn("m8f_ls_LaserBeam");
     _isInitialized = true;
 
     _puffMainhand.bInvisible = true;
     _puffOffhand.bInvisible = true;
+    _beamMainhand.bInvisible = true;
+    _beamOffhand.bInvisible = true;
   }
 
   private void ShowLaserSight(bool negative, bool friendly, PlayerInfo player)
   {
+    if (!_settings.showDot()) { return; }
+	
     Actor a = player.mo;
-    if (a == null) { return; }
+    if (a == null || a.health < 0) { return; }
 
     double pitch = a.AimTarget() ? a.BulletSlope(null, ALF_PORTALRESTRICT) : a.pitch;
 
     if (player.ReadyWeapon != null)
     {
       MaybeShowDot(pitch, a, negative, friendly, 0);
-      MaybeShowBeam(pitch, a, negative, friendly, 0);
     }
     if (player.OffhandWeapon != null)
     {
       MaybeShowDot(pitch, a, negative, friendly, 1);
+    }
+  }
+
+  private void ShowLaserBeam(bool negative, bool friendly, PlayerInfo player)
+  {
+    if (!_settings.beamEnabled()) { return; }
+	
+    Actor a = player.mo;
+    if (a == null || a.health < 0) { return; }
+
+    double pitch = a.AimTarget() ? a.BulletSlope(null, ALF_PORTALRESTRICT) : a.pitch;
+
+    if (player.ReadyWeapon != null)
+    {
+      MaybeShowBeam(pitch, a, negative, friendly, 0);
+    }
+    if (player.OffhandWeapon != null)
+    {
       MaybeShowBeam(pitch, a, negative, friendly, 1);
     }
   }
 
   private void MaybeShowDot(double pitch, Actor a, bool negative, bool friendly, int hand)
   {
-    if (!_settings.isEnabled()) { return; }
-  
     if (_settings.hideOnMeleeWeap() && IsMeleeWeapon(_player, hand)) { return; }
     if (_settings.onlyWhenReady() && !IsWeaponReady(_player, hand)) { return; }
   
@@ -144,14 +170,40 @@ class m8f_ls_EventHandler : EventHandler
 
   private void MaybeShowBeam(double pitch, Actor a, bool negative, bool friendly, int hand)
   {
-    if (!_settings.beamEnabled()) { return; }
-  
     if (_settings.hideOnMeleeWeap() && IsMeleeWeapon(_player, hand)) { return; }
     if (_settings.onlyWhenReady() && !IsWeaponReady(_player, hand)) { return; }
+	
     let _vel = _player.mo.vel;
-    if(_settings.beamMoveHide() && (abs(_vel.x) > 2 || abs(_vel.y) > 2 || abs(_vel.z) > 2)) { return; }
+    if(_settings.beamMoveHide() && (abs(_vel.x) > 2 || abs(_vel.y) > 2 || abs(_vel.z) > 2))
+	{
+		_beamDelayCounter = 5;
+		return;
+	}
+	
+    vector3 beamPos 	= !!hand ? _player.mo.OffhandPos : _player.mo.AttackPos;
+	int beamOffset 		= _settings.beamOffset();
+	if(beamOffset > 0)
+	{
+		double pitch = a.AimTarget() ? a.BulletSlope(null, ALF_PORTALRESTRICT) : a.pitch;
+		Actor offsetPuff = a.LineAttack( a.angle
+									  , beamOffset
+									  , pitch
+									  , 0
+									  , "none"
+									  , "m8f_ls_BeamInvisiblePuff"
+									  , lFlags | LAF_NOINTERACT | (!!hand ? LAF_ISOFFHAND : 0)
+									  );
+		beamPos = offsetPuff.pos;
+	}
+	
+	if(_beamDelayCounter > 0)
+	{
+		let l_beam = !!hand ? _beamOffhand : _beamMainhand;
+		l_beam.SetOrigin(beamPos, false); //to prevent glitchy movement
+		return;
+	}
 
-    Actor  tempPuff = a.LineAttack( a.angle
+    Actor tempPuff = a.LineAttack( a.angle
                                   , maxDistance
                                   , pitch
                                   , 0
@@ -169,17 +221,48 @@ class m8f_ls_EventHandler : EventHandler
     else if (negative) { shade = _settings.targetColor();   }
     else               { shade = _settings.noTargetColor(); }
 
-    showBeam(a, tempPuff.pos, distance, shade, hand);
+	if(_settings.beamMode() == 0)
+		showBeam(beamPos, tempPuff.pos, distance, shade, hand);
+	else
+		ShowParticleBeam(beamPos, tempPuff.pos, distance, shade, hand);
   }
 
-  private void ShowBeam(Actor a, vector3 targetPos, double distance, string shade, int hand)
+  private void ShowBeam(vector3 beamPos, vector3 targetPos, double distance, string shade, int hand)
+  {
+	let l_beam = !!hand ? _beamOffhand : _beamMainhand;
+	let t_dummy = Actor.Spawn("m8f_ls_BeamInvisiblePuff", targetPos);
+	
+    color beamColor  	= shade;
+    double opacity 		= _settings.beamOpacity();
+    bool fullLength 	= _settings.beamLength();
+    double scale 		= _settings.beamScale();
+	scale = scale < 1 ? 1 : scale;
+	
+	l_beam.A_SetRenderStyle(opacity, STYLE_AddStencil);
+    l_beam.SetShade(beamColor);
+	l_beam.A_SetScale(distance/14, scale * 0.6);
+	l_beam.A_SetAngle(l_beam.AngleTo(t_dummy));
+	l_beam.A_SetPitch(GetPitchTo(l_beam, t_dummy));
+	
+	if(fullLength)
+		l_beam.SetStateLabel("LongBeam");
+	else
+		l_beam.SetStateLabel("Spawn");
+	
+    l_beam.bInvisible = false;
+    l_beam.SetOrigin(beamPos, true);
+	
+	t_dummy.destroy();
+  }
+
+  private void ShowParticleBeam(vector3 beamPos, vector3 targetPos, double distance, string shade, int hand)
   {
     color   beamColor  = shade;
     double  size       = 0.5 * _settings.beamScale();
-    vector3 wpos       = !!hand ? _player.mo.OffhandPos : _player.mo.AttackPos;
+    int  	maxParticle = _settings.beamPMax();
 
-    vector3 relPos = targetPos - wpos;
-    int     nSteps = int(distance / _settings.beamStep());
+    vector3 relPos 	   = targetPos - beamPos;
+    int     nSteps 	   = int(distance / _settings.beamStep());
 
     if (nSteps == 0) { return; }
 
@@ -187,9 +270,9 @@ class m8f_ls_EventHandler : EventHandler
     double  yStep     = relPos.y / nSteps;
     double  zStep     = relPos.z / nSteps;
     double  alpha     = _settings.beamOpacity();
-    int     drawSteps = min(nSteps - 2, 50);
+    int     drawSteps = min(nSteps - 2, maxParticle);
 
-    Actor wdummy = Actor.Spawn("m8f_ls_BeamInvisiblePuff", wpos);
+    Actor b_spawner = Actor.Spawn("m8f_ls_BeamInvisiblePuff", beamPos);
   
     for (int i = 2; i < drawSteps; ++i)
     {
@@ -197,14 +280,14 @@ class m8f_ls_EventHandler : EventHandler
       double yoff = yStep * i;
       double zoff = zStep * i;
 
-      wdummy.A_SpawnParticle( beamColor, beamFlags, beamLifetime, size, beamAngle
+      b_spawner.A_SpawnParticle( beamColor, beamFlags, beamLifetime, size, beamAngle
                        , xoff, yoff, zoff
                        , beamVel, beamVel, beamVel, beamAcc, beamAcc, beamAcc
                        , alpha
                        );
     }
   
-    wdummy.destroy();
+    b_spawner.destroy();
   }
 
   // static functions section //////////////////////////////////////////////////
@@ -234,6 +317,20 @@ class m8f_ls_EventHandler : EventHandler
 
     return isReady;
   }
+	
+  double GetPitchTo(Actor source, Actor target, double zOfs = 0, double targZOfs = 0, bool absolute = false)
+  {
+  	Vector3 origin = (source.pos.xy, source.pos.z - source.floorClip + zOfs);
+  	Vector3 dest = (target.pos.xy, target.pos.z - target.floorClip + targZOfs);
+
+  	Vector3 diff;
+  	if (!absolute)
+  		diff = level.Vec3Diff(origin, dest);
+  	else
+  		diff = dest - origin;
+
+  	return -atan2(diff.z, diff.xy.Length());
+  }
 
   // constants section /////////////////////////////////////////////////////////
 
@@ -255,5 +352,8 @@ class m8f_ls_EventHandler : EventHandler
   private PlayerInfo      _player;
   private Actor           _puffMainhand;
   private Actor           _puffOffhand;
+  private Actor           _beamOffhand;
+  private Actor           _beamMainhand;
+  private int             _beamDelayCounter;
 
 } // class m8f_ls_EventHandler

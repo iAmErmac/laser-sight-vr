@@ -15,7 +15,7 @@
 
 class m8f_ls_Settings
 {
-
+  bool   showDot()     		   { return showDotCvar.getBool();             }
   bool   targetColorChange()   { return targetColorChangeCvar.getBool();   }
   bool   friendlyColorChange() { return friendlyColorChangeCvar.getBool(); }
 
@@ -36,9 +36,13 @@ class m8f_ls_Settings
   double distanceMultiplier()  { return distanceMultCvar.getDouble();      }
 
   bool   beamEnabled()         { return beamEnabledCvar.getBool();         }
+  int    beamMode()        	   { return beamModeCvar.getint();             }
   bool   beamMoveHide()        { return beamHideCvar.getBool();            }
   double beamOpacity()         { return beamOpacityCvar.getDouble();       }
+  int 	 beamOffset()          { return beamOffsetCvar.getint();           }
+  int 	 beamLength()          { return beamLengthCvar.getint();           }
   double beamStep()            { return beamStepCvar.getDouble();          }
+  int 	 beamPMax()            { return beamPMaxCvar.getint();             }
 
   bool   isEnabled()           { return isEnabledCvar.getBool();           }
 
@@ -50,6 +54,8 @@ class m8f_ls_Settings
   {
     let result = new("m8f_ls_Settings");
 
+    result.showDotCvar   		   = ls_Cvar.of("m8f_wm_ShowLaserDot");
+	
     result.targetColorChangeCvar   = ls_Cvar.of("m8f_wm_TSChangeLaserColor");
     result.friendlyColorChangeCvar = ls_Cvar.of("m8f_ls_TSChangeColorFriendly");
 
@@ -70,9 +76,13 @@ class m8f_ls_Settings
     result.distanceMultCvar        = ls_Cvar.of("m8f_ls_distance_mult");
 
     result.beamEnabledCvar         = ls_Cvar.of("m8f_ls_BeamEnabled");
+    result.beamModeCvar            = ls_Cvar.of("m8f_ls_BeamMode");
     result.beamHideCvar            = ls_Cvar.of("m8f_ls_BeamMoveHide");
     result.beamOpacityCvar         = ls_Cvar.of("m8f_ls_BeamOpacity");
+    result.beamOffsetCvar          = ls_Cvar.of("m8f_ls_BeamOffset");
+    result.beamLengthCvar          = ls_Cvar.of("m8f_ls_BeamLength");
     result.beamStepCvar            = ls_Cvar.of("m8f_ls_BeamStep");
+    result.beamPMaxCvar            = ls_Cvar.of("m8f_ls_BeamPMax");
 
     result.isEnabledCvar           = ls_Cvar.of("m8f_wm_ShowLaserSight");
 
@@ -82,6 +92,8 @@ class m8f_ls_Settings
     return result;
   }
 
+  private ls_Cvar showDotCvar;
+  
   private ls_Cvar targetColorChangeCvar;
   private ls_Cvar friendlyColorChangeCvar;
 
@@ -102,9 +114,13 @@ class m8f_ls_Settings
   private ls_Cvar distanceMultCvar;
 
   private ls_Cvar beamEnabledCvar;
+  private ls_Cvar beamModeCvar;
   private ls_Cvar beamHideCvar;
   private ls_Cvar beamOpacityCvar;
+  private ls_Cvar beamOffsetCvar;
+  private ls_Cvar beamLengthCvar;
   private ls_Cvar beamStepCvar;
+  private ls_Cvar beamPMaxCvar;
 
   private ls_Cvar isEnabledCvar;
 
