@@ -165,8 +165,8 @@ class m8f_ls_EventHandler : EventHandler
 		return;
 	}
 	
-	Inventory playerHandTracker = _player.mo.FindInventory("MainHandTracker");
-    vector3 beamPos 			= MainHandTracker(playerHandTracker).AttackPos;
+	Inventory playerHandTracker = _player.mo.FindInventory("LSMainHandTracker");
+    vector3 beamPos 			= LSMainHandTracker(playerHandTracker).AttackPos;
 	int beamOffset 				= _settings.beamOffset();
 	if(beamOffset > 0)
 	{

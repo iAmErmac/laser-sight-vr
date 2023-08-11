@@ -10,16 +10,16 @@
 *		
 */
 
-Class VRMainHandPosTracker : EventHandler
+Class LSMainHandPosTracker : EventHandler
 {
 	override void PlayerEntered(PlayerEvent e)
 	{
 		let pmo = players[e.PlayerNumber].mo;
-		pmo.SetInventory("MainHandTracker", 1, false);
+		pmo.SetInventory("LSMainHandTracker", 1, false);
 	}
 }
 
-Class MainHandTracker : CustomInventory
+Class LSMainHandTracker : CustomInventory
 {
 	Vector3 AttackPos;
 	Float AttackAngle;
@@ -35,7 +35,7 @@ Class MainHandTracker : CustomInventory
 	
 	override void DoEffect()
 	{
-		Actor mainhand_tracker = owner.SpawnPlayerMissile("MainHandPosTracker");
+		Actor mainhand_tracker = owner.SpawnPlayerMissile("LSHandPosTracker");
 		if(mainhand_tracker) mainhand_tracker.master = self;
 		
 		//console.printf("x: %d, y: %d, z: %d, angle: %d, pitch: %d", AttackPos.x, AttackPos.y, AttackPos.z, AttackAngle, AttackPitch);
@@ -57,7 +57,7 @@ Class MainHandTracker : CustomInventory
 	}
 }
 
-Class MainHandPosTracker : Actor
+Class LSHandPosTracker : Actor
 {
 	Vector3 t_pos;
 	double t_pitch;
@@ -77,9 +77,9 @@ Class MainHandPosTracker : Actor
 		
 		t_pitch = (atan2(sqrt(dX * dX + dY * dY), dZ) * -1) + 90;
 		
-		MainHandTracker(master).AttackPos = t_pos;
-		MainHandTracker(master).AttackAngle = self.angle;
-		MainHandTracker(master).AttackPitch = t_pitch;
+		LSMainHandTracker(master).AttackPos = t_pos;
+		LSMainHandTracker(master).AttackAngle = self.angle;
+		LSMainHandTracker(master).AttackPitch = t_pitch;
 	}
 
 	Default
